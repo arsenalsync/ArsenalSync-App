@@ -91,17 +91,17 @@ fun SignInScreen(
 
             // Draw decorative circles
             drawCircle(
-                color = primaryColor.copy(alpha = 0.05f),
+                color = primaryColor.copy(alpha = 0.1f),
                 radius = 280.dp.toPx(),
                 center = Offset(-100.dp.toPx(), -50.dp.toPx())
             )
             drawCircle(
-                color = primaryColor.copy(alpha = 0.08f),
+                color = primaryColor.copy(alpha = 0.12f),
                 radius = 180.dp.toPx(),
                 center = Offset(size.width + 50.dp.toPx(), 100.dp.toPx())
             )
             drawCircle(
-                color = primaryColor.copy(alpha = 0.06f),
+                color = primaryColor.copy(alpha = 0.09f),
                 radius = 140.dp.toPx(),
                 center = Offset(size.width * 0.7f, 50.dp.toPx())
             )

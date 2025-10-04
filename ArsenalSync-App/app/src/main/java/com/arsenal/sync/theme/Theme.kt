@@ -9,7 +9,7 @@ import com.arsenal.sync.core.domain.utils.ThemeOption
 
 private val DarkColorScheme = darkColorScheme(
     primary = lightYellow,
-    secondary = lightYellow,
+    secondary = darkYellow,
     tertiary = lightGrey,
     background = black,
     surface = black,
@@ -22,7 +22,7 @@ private val DarkColorScheme = darkColorScheme(
 
 private val LightColorScheme = lightColorScheme(
     primary = darkYellow,
-    secondary = darkYellow,
+    secondary = lightYellow,
     tertiary = darkGrey,
     background = white,
     surface = white,

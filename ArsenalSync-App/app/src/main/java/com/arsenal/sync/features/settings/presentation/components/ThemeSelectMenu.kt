@@ -40,7 +40,6 @@ fun ThemeSelector(currentTheme: ThemeOption, onThemeSelect: (ThemeOption) -> Uni
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 24.dp)
             .padding(bottom = 16.dp)
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,

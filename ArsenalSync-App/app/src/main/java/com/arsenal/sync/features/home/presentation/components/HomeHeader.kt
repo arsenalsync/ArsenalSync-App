@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,32 +24,39 @@ import com.arsenal.sync.R
 
 @Composable
 fun HomeHeader(userName: String, onSettingClick: () -> Unit) {
-    Row(
+    Surface(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Bottom
+        shadowElevation = 2.dp,
+        color = MaterialTheme.colorScheme.background
     ) {
-
-        Text(
-            text = stringResource(R.string.hello, userName),
-            style = MaterialTheme.typography.titleLarge,
-            maxLines = 1,
-            color = MaterialTheme.colorScheme.onSurface,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.padding(bottom = 4.dp, start = 8.dp)
-        )
-
-        IconButton(
+        Row(
             modifier = Modifier
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)),
-            onClick = onSettingClick
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Default.Settings,
-                contentDescription = stringResource(R.string.setting_icon),
-                tint = MaterialTheme.colorScheme.primary
+
+            Text(
+                text = stringResource(R.string.hello, userName),
+                style = MaterialTheme.typography.titleLarge,
+                maxLines = 1,
+                color = MaterialTheme.colorScheme.onSurface,
+                overflow = TextOverflow.Ellipsis,
             )
+
+            IconButton(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)),
+                onClick = onSettingClick
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = stringResource(R.string.setting_icon),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     }
 }

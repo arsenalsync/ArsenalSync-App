@@ -35,7 +35,6 @@ fun RootNavGraph(
                 exitTransition = AnimateScreen.leftExitTransition()
             ) {
                 AuthNavGraph(
-                    onBackOrFinish = onBackOrFinish,
                     onOnboardingSuccess = {
                         rootNavController.navigate(HomeNavGraph) {
                             popUpTo(AuthNavGraph) {

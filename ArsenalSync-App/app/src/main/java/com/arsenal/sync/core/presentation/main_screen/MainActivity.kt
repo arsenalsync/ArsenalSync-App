@@ -3,6 +3,7 @@ package com.arsenal.sync.core.presentation.main_screen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -50,7 +51,7 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
 
         splashScreen.setKeepOnScreenCondition { isReady.value == null }
-
+        enableEdgeToEdge()
         setContent {
             val readyState by isReady.collectAsStateWithLifecycle()
             val theme by themeState.collectAsStateWithLifecycle()

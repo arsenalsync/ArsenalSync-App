@@ -8,4 +8,10 @@ sealed class HomeRoute {
 
     @Serializable
     data object HomeScreen : HomeRoute()
+
+    @Serializable
+    data object GeoFencingScreen : HomeRoute()
+
+    @Serializable
+    data object TimePolicyScreen : HomeRoute()
 }

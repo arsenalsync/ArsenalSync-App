@@ -10,16 +10,21 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Commit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -33,13 +38,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arsenal.sync.BuildConfig
 import com.arsenal.sync.R
 import com.arsenal.sync.common.domain.state.AppState
-import com.arsenal.sync.common.presentation.HeaderBackIcon
 import com.arsenal.sync.features.auth.presentation.viewmodel.AuthViewModel
 import com.arsenal.sync.features.settings.presentation.components.ProfileReDirectItem
 import com.arsenal.sync.features.settings.presentation.components.ThemeSelector
@@ -116,25 +122,56 @@ fun SettingScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 12.dp)
     ) {
 
-        HeaderBackIcon(headerText = stringResource(R.string.settings), onBackClick = onBackClick)
-
-        ThemeSelector(
-            currentTheme = themeState,
-            onThemeSelect = { settingsViewModel.onThemeChange(selectedTheme = it) }
-        )
-        profileReDirectItems.forEachIndexed { index, profileReDirectItem ->
-            ProfileReDirectItem(
-                profileReDirectItem = profileReDirectItem,
-                onItemClick = {
-                    when (index) {
-                        0 -> showAppVersion(context = context)
-                        1 -> showSignOutDialog = true
-                    }
+        // Header
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shadowElevation = 2.dp,
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = onBackClick) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.back),
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
                 }
+
+                Text(
+                    text = stringResource(R.string.settings),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+        }
+
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)) {
+            ThemeSelector(
+                currentTheme = themeState,
+                onThemeSelect = { settingsViewModel.onThemeChange(selectedTheme = it) }
             )
+            profileReDirectItems.forEachIndexed { index, profileReDirectItem ->
+                ProfileReDirectItem(
+                    profileReDirectItem = profileReDirectItem,
+                    onItemClick = {
+                        when (index) {
+                            0 -> showAppVersion(context = context)
+                            1 -> showSignOutDialog = true
+                        }
+                    }
+                )
+            }
         }
     }
 }
