@@ -8,8 +8,8 @@ import androidx.compose.runtime.Composable
 import com.arsenal.sync.core.domain.utils.ThemeOption
 
 private val DarkColorScheme = darkColorScheme(
-    primary = lightBlue,
-    secondary = lightBlue,
+    primary = lightYellow,
+    secondary = lightYellow,
     tertiary = lightGrey,
     background = black,
     surface = black,
@@ -21,8 +21,8 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = darkBlue,
-    secondary = darkBlue,
+    primary = darkYellow,
+    secondary = darkYellow,
     tertiary = darkGrey,
     background = white,
     surface = white,
