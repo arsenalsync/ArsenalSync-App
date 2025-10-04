@@ -2,7 +2,6 @@ package com.arsenal.sync.features.auth.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -15,7 +14,6 @@ import com.arsenal.sync.features.auth.presentation.viewmodel.AuthViewModel
 
 @Composable
 fun AuthNavGraph(
-    onBackOrFinish: () -> Unit,
     onOnboardingSuccess: () -> Unit
 ) {
     val authNavController = rememberNavController()
@@ -48,18 +46,10 @@ fun AuthNavGraph(
             exitTransition = AnimateScreen.leftExitTransition()
         ) {
             SignUpScreen(
-                onBackClick = {
-                    handleBackClick(authNavController, onBackOrFinish)
-                },
                 moveToSignIn = { authNavController.navigateUp() },
                 onSignUpSuccess = onOnboardingSuccess,
                 authViewModel = authViewModel
             )
         }
     }
-}
-
-private fun handleBackClick(authNavController: NavHostController, onBackOrFinish: () -> Unit) {
-    if (authNavController.previousBackStackEntry == null) onBackOrFinish()
-    else authNavController.navigateUp()
 }
