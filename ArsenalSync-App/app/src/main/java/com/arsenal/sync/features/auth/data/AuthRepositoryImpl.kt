@@ -89,14 +89,8 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAuthCredentials(): Result<Pair<String, String>> {
-        return try {
-            withContext(Dispatchers.IO) {
-                preferences.getAuthCredentials().first()
-            }
-        } catch (_: Exception) {
-            Result.failure(Exception(resourceManager.getString(R.string.unknown_error_occurred_in_getting_auth_credentials)))
-        }
+    override suspend fun getAuthCredentials(): Pair<String, String> {
+        return preferences.getAuthCredentials().first()
     }
 
     private fun isUserValid(user: SignUpDetailDto): Boolean {

@@ -1,6 +1,7 @@
 package com.arsenal.sync.features.home.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -8,14 +9,15 @@ import com.arsenal.sync.animation.AnimateScreen
 import com.arsenal.sync.features.geofencing.presentation.screen.GeofencingScreen
 import com.arsenal.sync.features.home.presentation.navigation.HomeRoute.HomeScreen
 import com.arsenal.sync.features.home.presentation.screens.HomeScreen
+import com.arsenal.sync.features.home.presentation.viewmodel.HomeViewModel
 import com.arsenal.sync.features.time_policy.presentation.screen.TimePolicyScreen
 
 @Composable
 fun HomeNavGraph(
-    navigateToSettings: () -> Unit
+    navigateToSettings: () -> Unit,
+    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val homeNavController = rememberNavController()
-
     NavHost(
         navController = homeNavController,
         startDestination = HomeScreen
@@ -30,7 +32,8 @@ fun HomeNavGraph(
             HomeScreen(
                 onSettingClick = navigateToSettings,
                 onGeofencingClick = { homeNavController.navigate(route = HomeRoute.GeoFencingScreen) },
-                onTimePolicyClick = { homeNavController.navigate(route = HomeRoute.TimePolicyScreen) }
+                onTimePolicyClick = { homeNavController.navigate(route = HomeRoute.TimePolicyScreen) },
+                homeViewModel = homeViewModel
             )
         }
 
@@ -40,7 +43,9 @@ fun HomeNavGraph(
             popExitTransition = AnimateScreen.rightPopExitTransition(),
             exitTransition = AnimateScreen.leftExitTransition()
         ) {
-            GeofencingScreen(onBackClick = { homeNavController.navigateUp() })
+            GeofencingScreen(
+                homeViewModel = homeViewModel,
+                onBackClick = { homeNavController.navigateUp() })
         }
 
         composable<HomeRoute.TimePolicyScreen>(
@@ -49,7 +54,9 @@ fun HomeNavGraph(
             popExitTransition = AnimateScreen.rightPopExitTransition(),
             exitTransition = AnimateScreen.leftExitTransition()
         ) {
-            TimePolicyScreen(onBackClick = { homeNavController.navigateUp() })
+            TimePolicyScreen(
+                homeViewModel = homeViewModel,
+                onBackClick = { homeNavController.navigateUp() })
         }
     }
 }

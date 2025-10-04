@@ -34,10 +34,8 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,15 +44,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arsenal.sync.R
+import com.arsenal.sync.features.home.presentation.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GeofencingScreen(
-    onBackClick: () -> Unit ,
-    onSaveClick: () -> Unit = {}
+    homeViewModel: HomeViewModel,
+    onBackClick: () -> Unit
 ) {
-    var radius by remember { mutableFloatStateOf(500f) }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            homeViewModel.resetState()
+        }
+    }
+
+    val radius by homeViewModel.radius.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -96,8 +103,7 @@ fun GeofencingScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp)
-            ,
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Map Placeholder Card
@@ -221,7 +227,7 @@ fun GeofencingScreen(
                     // Slider
                     Slider(
                         value = radius,
-                        onValueChange = { radius = it },
+                        onValueChange = homeViewModel::updateRadius,
                         valueRange = 100f..2000f,
                         steps = 37,
                         colors = SliderDefaults.colors(
@@ -235,28 +241,37 @@ fun GeofencingScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(stringResource(R.string._100m), fontSize = 12.sp, color = MaterialTheme.colorScheme.tertiary)
-                        Text(stringResource(R.string._2000m), fontSize = 12.sp, color = MaterialTheme.colorScheme.tertiary)
+                        Text(
+                            stringResource(R.string._100m),
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.tertiary
+                        )
+                        Text(
+                            stringResource(R.string._2000m),
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.tertiary
+                        )
                     }
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     // Buttons
                     Button(
-                        onClick = onSaveClick,
+                        onClick = { homeViewModel.saveRadius(radius) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(48.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onSurface
+                            contentColor = MaterialTheme.colorScheme.onPrimary
                         ),
                         shape = RoundedCornerShape(8.dp)
                     ) {
                         Text(
                             text = stringResource(R.string.save_geo_fence),
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
                     }
 

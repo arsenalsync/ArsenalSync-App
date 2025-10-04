@@ -125,13 +125,9 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val result = authRepository.getAuthCredentials()
-                result.fold(
-                    onSuccess = {
-                        signInEmailText.value = it.first
-                        signInPasswordText.value = it.second
-                    },
-                    onFailure = { }
-                )
+
+                signInEmailText.value = result.first
+                signInPasswordText.value = result.second
             } catch (_: Exception) {
             }
         }

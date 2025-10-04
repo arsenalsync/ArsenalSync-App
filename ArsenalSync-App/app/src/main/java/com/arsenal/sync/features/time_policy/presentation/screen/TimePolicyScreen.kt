@@ -1,5 +1,8 @@
 package com.arsenal.sync.features.time_policy.presentation.screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -29,36 +33,41 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arsenal.sync.R
+import com.arsenal.sync.common.presentation.InputBox
+import com.arsenal.sync.features.home.presentation.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePolicyScreen(
-    onBackClick: () -> Unit,
-    onSaveClick: () -> Unit = {}
+    homeViewModel: HomeViewModel,
+    onBackClick: () -> Unit
 ) {
-    var policyType by remember { mutableStateOf("24h") }
-    var customHours by remember { mutableStateOf("24") }
+    val policyType by homeViewModel.timePolicy.collectAsStateWithLifecycle()
+    val customHours by homeViewModel.customHours.collectAsStateWithLifecycle()
+    val displayHours = if (policyType == 1) "24" else customHours
 
-    val displayHours = if (policyType == "24h") "24" else customHours
+    DisposableEffect(Unit) {
+        onDispose {
+            homeViewModel.resetState()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -100,8 +109,7 @@ fun TimePolicyScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp)
-            ,
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Timer Display Card
@@ -184,16 +192,16 @@ fun TimePolicyScreen(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { policyType = "24h" },
+                            .clickable { homeViewModel.updateTimePolicy(1) },
                         shape = RoundedCornerShape(8.dp),
                         colors = CardDefaults.cardColors(
-                            containerColor = if (policyType == "24h")
+                            containerColor = if (policyType == 1)
                                 MaterialTheme.colorScheme.secondary
                             else MaterialTheme.colorScheme.background
                         ),
                         border = BorderStroke(
                             width = 1.dp,
-                            color = if (policyType == "24h")
+                            color = if (policyType == 1)
                                 MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.outline
                         )
@@ -206,8 +214,8 @@ fun TimePolicyScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             RadioButton(
-                                selected = policyType == "24h",
-                                onClick = { policyType = "24h" },
+                                selected = policyType == 1,
+                                onClick = { homeViewModel.updateTimePolicy(1) },
                                 colors = RadioButtonDefaults.colors(
                                     selectedColor = MaterialTheme.colorScheme.primary
                                 )
@@ -233,16 +241,16 @@ fun TimePolicyScreen(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { policyType = "custom" },
+                            .clickable { homeViewModel.updateTimePolicy(2) },
                         shape = RoundedCornerShape(8.dp),
                         colors = CardDefaults.cardColors(
-                            containerColor = if (policyType == "custom")
+                            containerColor = if (policyType == 2)
                                 MaterialTheme.colorScheme.secondary
                             else MaterialTheme.colorScheme.background
                         ),
                         border = BorderStroke(
                             width = 1.dp,
-                            color = if (policyType == "custom")
+                            color = if (policyType == 2)
                                 MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.outline
                         )
@@ -255,8 +263,8 @@ fun TimePolicyScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             RadioButton(
-                                selected = policyType == "custom",
-                                onClick = { policyType = "custom" },
+                                selected = policyType == 2,
+                                onClick = { homeViewModel.updateTimePolicy(2) },
                                 colors = RadioButtonDefaults.colors(
                                     selectedColor = MaterialTheme.colorScheme.primary
                                 )
@@ -279,7 +287,11 @@ fun TimePolicyScreen(
                     }
 
                     // Custom Hours Input (shown only when custom is selected)
-                    if (policyType == "custom") {
+                    AnimatedVisibility(
+                        visible = policyType == 2,
+                        enter = expandVertically(),
+                        exit = shrinkVertically()
+                    ) {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -293,16 +305,11 @@ fun TimePolicyScreen(
                                 color = MaterialTheme.colorScheme.onSurface
                             )
 
-                            OutlinedTextField(
-                                value = customHours,
-                                onValueChange = { customHours = it },
-                                placeholder = { Text("Enter hours") },
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
-                                ),
-                                singleLine = true
+                            InputBox(
+                                text = customHours,
+                                onChange = homeViewModel::updateCustomHours,
+                                label = R.string.enter_hours,
+                                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
                             )
 
                             Text(
@@ -317,20 +324,22 @@ fun TimePolicyScreen(
 
                     // Buttons
                     Button(
-                        onClick = onSaveClick,
+                        onClick = { homeViewModel.saveTime() },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(48.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onSurface
+                            contentColor = MaterialTheme.colorScheme.onPrimary
                         ),
                         shape = RoundedCornerShape(8.dp)
                     ) {
                         Text(
                             text = stringResource(R.string.save_time_policy),
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onPrimary
+
                         )
                     }
 
@@ -363,7 +372,7 @@ fun TimePolicyScreen(
                 )
             ) {
                 Text(
-                    text = "How it works: Your firearm will automatically lock after the specified period of inactivity. You can always manually unlock it when needed.",
+                    text = stringResource(R.string.how_it_works_your_firearm_will_automatically_lock_after_the_specified_period_of_inactivity_you_can_always_manually_unlock_it_when_needed),
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.padding(16.dp)

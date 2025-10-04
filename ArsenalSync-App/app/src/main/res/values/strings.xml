@@ -128,4 +128,12 @@
     <string name="hours_until_auto_lock">Hours until auto-lock</string>
     <string name="maximum_168_hours_1_week">Maximum: 168 hours (1 week)</string>
     <string name="save_time_policy">Save Time Policy</string>
+    <string name="active">Active</string>
+    <string name="firearm_locked">Firearm Locked</string>
+    <string name="firearm_active">Firearm Active</string>
+    <string name="your_firearm_is_ready_for_use">Your firearm is ready for use</string>
+    <string name="your_firearm_is_secured">Your firearm is secured</string>
+    <string name="locked">Locked</string>
+    <string name="how_it_works_your_firearm_will_automatically_lock_after_the_specified_period_of_inactivity_you_can_always_manually_unlock_it_when_needed">How it works: Your firearm will automatically lock after the specified period of inactivity. You can always manually unlock it when needed.</string>
+    <string name="enter_hours">Enter hours</string>
 </resources>

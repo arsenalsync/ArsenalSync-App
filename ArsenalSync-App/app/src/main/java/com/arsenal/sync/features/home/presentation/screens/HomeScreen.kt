@@ -7,7 +7,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arsenal.sync.features.home.presentation.components.GunVerificationCard
 import com.arsenal.sync.features.home.presentation.components.HomeHeader
@@ -19,7 +18,7 @@ fun HomeScreen(
     onSettingClick: () -> Unit,
     onGeofencingClick: () -> Unit,
     onTimePolicyClick: () -> Unit,
-    homeViewModel: HomeViewModel = hiltViewModel()
+    homeViewModel: HomeViewModel
 ) {
     val userState by homeViewModel.userState.collectAsStateWithLifecycle()
 
@@ -34,6 +33,7 @@ fun HomeScreen(
             GunVerificationCard()
         } else {
             VerifiedDashboard(
+                homeViewModel = homeViewModel,
                 onGeofencingClick = onGeofencingClick,
                 onTimePolicyClick = onTimePolicyClick
             )

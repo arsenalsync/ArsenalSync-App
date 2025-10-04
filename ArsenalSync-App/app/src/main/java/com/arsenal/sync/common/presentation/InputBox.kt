@@ -1,5 +1,6 @@
 package com.arsenal.sync.common.presentation
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -36,12 +37,12 @@ import com.arsenal.sync.R
 fun InputBox(
     text: String,
     onChange: (String) -> Unit,
-    isError: Boolean,
     modifier: Modifier = Modifier,
-    focusRequester: FocusRequester,
+    isError: Boolean = false,
+    focusRequester: FocusRequester? = null,
     nextFocusRequester: FocusRequester? = null,
-    label: Int,
-    errorText: String,
+    @StringRes label: Int,
+    errorText: String = "",
     isPassword: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
     keyboardActions: KeyboardActions = KeyboardActions(
@@ -57,13 +58,12 @@ fun InputBox(
         label = { Text(text = stringResource(label)) },
         singleLine = true,
         modifier = modifier
-            .padding(top = 16.dp)
             .fillMaxWidth()
-            .focusRequester(focusRequester),
+            .then(if (focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier),
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         visualTransformation =
-        if (isTextVisible && isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+            if (isTextVisible && isPassword) PasswordVisualTransformation() else VisualTransformation.None,
         trailingIcon = {
             if (isPassword) {
                 val icon = if (isTextVisible) Icons.Filled.VisibilityOff

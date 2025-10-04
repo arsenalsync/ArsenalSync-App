@@ -144,7 +144,7 @@ fun SignInScreen(
                 text = emailText,
                 onChange = { emailText = it },
                 isError = formError[0],
-                modifier = Modifier.padding(top = 24.dp),
+                modifier = Modifier.padding(top = 40.dp),
                 focusRequester = emailFocusRequester,
                 nextFocusRequester = passwordFocusRequester,
                 label = R.string.email,
@@ -156,6 +156,7 @@ fun SignInScreen(
                 onChange = { passwordText = it },
                 isError = formError[1],
                 label = R.string.password,
+                modifier = Modifier.padding(top = 16.dp),
                 focusRequester = passwordFocusRequester,
                 errorText = stringResource(R.string.password_must_contain_6_or_more_characters),
                 isPassword = true,
@@ -222,7 +223,7 @@ fun SignInScreen(
                 )
                 Text(
                     text = stringResource(R.string.sign_up),
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 14.sp,
                     modifier = Modifier
                         .padding(start = 8.dp)

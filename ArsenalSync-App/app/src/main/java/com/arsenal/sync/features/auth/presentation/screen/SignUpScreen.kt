@@ -143,7 +143,7 @@ fun SignUpScreen(
                 text = firstNameText,
                 onChange = { firstNameText = it },
                 isError = formError[0],
-                modifier = Modifier.padding(top = 24.dp),
+                modifier = Modifier.padding(top = 40.dp),
                 focusRequester = firstNameFocusRequester,
                 nextFocusRequester = emailFocusRequester,
                 label = R.string.first_name,
@@ -154,6 +154,7 @@ fun SignUpScreen(
                 text = emailText,
                 onChange = { emailText = it },
                 isError = formError[1],
+                modifier = Modifier.padding(top = 16.dp),
                 focusRequester = emailFocusRequester,
                 nextFocusRequester = passwordFocusRequester,
                 label = R.string.email,
@@ -164,6 +165,7 @@ fun SignUpScreen(
                 text = passwordText,
                 onChange = { passwordText = it },
                 isError = formError[2],
+                modifier = Modifier.padding(top = 16.dp),
                 label = R.string.password,
                 focusRequester = passwordFocusRequester,
                 errorText = stringResource(R.string.password_must_contain_6_or_more_characters),
@@ -232,7 +234,7 @@ fun SignUpScreen(
                 )
                 Text(
                     text = stringResource(R.string.sign_in),
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 14.sp,
                     modifier = Modifier
                         .padding(start = 8.dp)

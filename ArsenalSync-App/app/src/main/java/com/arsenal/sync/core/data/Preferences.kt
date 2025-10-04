@@ -4,9 +4,10 @@ import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.arsenal.sync.R
 import com.arsenal.sync.core.domain.model.User
 import com.arsenal.sync.core.domain.utils.ThemeOption
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -34,6 +35,10 @@ class Preferences @Inject constructor(
         private val IS_ONBOARDED = booleanPreferencesKey("is_onboarded")
         private val IS_REMEMBER = booleanPreferencesKey("is_remember")
         private val IS_VERIFIED = booleanPreferencesKey("is_verified")
+        private val IS_LOCKED = booleanPreferencesKey("is_locked")
+        private val RADIUS = floatPreferencesKey("radius")
+        private val TIME_POLICY = intPreferencesKey("time_policy")
+        private val HOURS = intPreferencesKey("hours")
         private val EMAIL = stringPreferencesKey("email")
         private val PASSWORD = stringPreferencesKey("password")
         private val FIRST_NAME = stringPreferencesKey("first_name")
@@ -68,7 +73,7 @@ class Preferences @Inject constructor(
     }
 
     // Get user details
-    fun getUser(): Flow<Result<User>> =
+    fun getUser(): Flow<User> =
         context.dataStore.data.catch { exception ->
             if (exception is IOException) emit(emptyPreferences())
             else throw exception
@@ -77,35 +82,22 @@ class Preferences @Inject constructor(
             val firstName = preferences[FIRST_NAME] ?: ""
             val isVerified = preferences[IS_VERIFIED] ?: false
 
-            if (email.isNotEmpty() && firstName.isNotEmpty()) {
-                Result.success(
-                    User(
-                        email = email,
-                        firstName = firstName,
-                        isVerified = isVerified
-                    )
-                )
-            } else {
-                Result.failure(Exception(context.getString(R.string.failure_in_getting_saved_data)))
-            }
+            User(
+                email = email,
+                firstName = firstName,
+                isVerified = isVerified
+            )
         }
 
     // Get Auth credentials
-    fun getAuthCredentials(): Flow<Result<Pair<String, String>>> =
+    fun getAuthCredentials(): Flow<Pair<String, String>> =
         context.dataStore.data.catch { exception ->
             if (exception is IOException) emit(emptyPreferences())
             else throw exception
         }.map { preferences ->
             val email = preferences[EMAIL] ?: ""
             val password = preferences[PASSWORD] ?: ""
-
-            if (email.isNotEmpty() && password.isNotEmpty()) {
-                Result.success(
-                    Pair(email, password)
-                )
-            } else {
-                Result.failure(Exception(context.getString(R.string.failure_in_getting_saved_auth_credentials)))
-            }
+            Pair(email, password)
         }
 
     // Set user details
@@ -155,6 +147,54 @@ class Preferences @Inject constructor(
                 ThemeOption.LIGHT.displayName -> ThemeOption.LIGHT
                 else -> ThemeOption.SYSTEM
             }
+        }
+    }
+
+    fun getIsLocked(): Flow<Boolean> {
+        return context.dataStore.data.catch { exception ->
+            if (exception is IOException) emit(emptyPreferences())
+            else throw exception
+        }.map { preferences ->
+            preferences[IS_LOCKED] ?: false
+        }
+    }
+
+    suspend fun setIsLocked(locked: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[IS_LOCKED] = locked
+        }
+    }
+
+    suspend fun setRadius(radius: Float) {
+        context.dataStore.edit { preferences ->
+            preferences[RADIUS] = radius
+        }
+    }
+
+    suspend fun getRadius(): Float {
+        return context.dataStore.data.catch { exception ->
+            if (exception is IOException) emit(emptyPreferences())
+            else throw exception
+        }.map { preferences ->
+            preferences[RADIUS] ?: 500f
+        }.first()
+    }
+
+    suspend fun getTimePolicy(): Pair<Int, Int> {
+        return context.dataStore.data.catch { exception ->
+            if (exception is IOException) emit(emptyPreferences())
+            else throw exception
+        }.map { preferences ->
+            val timePolicy = preferences[TIME_POLICY] ?: 1
+            val hours = preferences[HOURS] ?: 24
+            Pair(timePolicy, hours)
+        }.first()
+    }
+
+    suspend fun setTime(time: Pair<Int, Int>) {
+        context.dataStore.edit { preferences ->
+            preferences[TIME_POLICY] = time.first
+            preferences[HOURS] = time.second
         }
     }
 }

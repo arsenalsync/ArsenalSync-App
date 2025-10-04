@@ -33,16 +33,17 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.arsenal.sync.R
+import com.arsenal.sync.features.home.presentation.viewmodel.HomeViewModel
 import com.arsenal.sync.theme.Destructive
 import com.arsenal.sync.theme.DestructiveLight
 import com.arsenal.sync.theme.Success
@@ -51,9 +52,10 @@ import com.arsenal.sync.theme.SuccessLight
 @Composable
 fun VerifiedDashboard(
     onGeofencingClick: () -> Unit = {},
-    onTimePolicyClick: () -> Unit = {}
+    onTimePolicyClick: () -> Unit = {},
+    homeViewModel: HomeViewModel
 ) {
-    var isLocked by remember { mutableStateOf(true) }
+    val isLocked by homeViewModel.isLocked.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -98,14 +100,18 @@ fun VerifiedDashboard(
 
                 // Status Text
                 Text(
-                    text = if (isLocked) "Firearm Locked" else "Firearm Active",
+                    text = if (isLocked) stringResource(R.string.firearm_locked) else stringResource(
+                        R.string.firearm_active
+                    ),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Text(
-                    text = if (isLocked) "Your firearm is secured" else "Your firearm is ready for use",
+                    text = if (isLocked) stringResource(R.string.your_firearm_is_secured) else stringResource(
+                        R.string.your_firearm_is_ready_for_use
+                    ),
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.tertiary
                 )
@@ -122,7 +128,7 @@ fun VerifiedDashboard(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Locked",
+                            text = stringResource(R.string.locked),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
                             color = MaterialTheme.colorScheme.onSurface
@@ -130,7 +136,7 @@ fun VerifiedDashboard(
 
                         Switch(
                             checked = !isLocked,
-                            onCheckedChange = { isLocked = !it },
+                            onCheckedChange = homeViewModel::onSetIsLocked,
                             colors = SwitchDefaults.colors(
                                 checkedThumbColor = MaterialTheme.colorScheme.background,
                                 checkedTrackColor = Success,
@@ -140,7 +146,7 @@ fun VerifiedDashboard(
                         )
 
                         Text(
-                            text = "Active",
+                            text = stringResource(R.string.active),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
                             color = MaterialTheme.colorScheme.onSurface
@@ -247,7 +253,10 @@ private fun SafetyModuleCard(
                     contentColor = if (isEmergency) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onSurface
                 ),
                 shape = RoundedCornerShape(8.dp),
-                border = if (!isEmergency) BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(0.5f)) else null
+                border = if (!isEmergency) BorderStroke(
+                    1.dp,
+                    MaterialTheme.colorScheme.outline.copy(0.5f)
+                ) else null
             ) {
                 Text(
                     text = buttonText,
