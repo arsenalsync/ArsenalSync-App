@@ -1,6 +1,7 @@
 package com.arsenal.sync.features.home.presentation.components
 
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,11 +49,47 @@ import com.arsenal.sync.R
 @Composable
 fun GunVerificationCard() {
     var gunType by remember { mutableStateOf("") }
+    var gunModel by remember { mutableStateOf("") }
     var gunNumber by remember { mutableStateOf("") }
     var isSubmitting by remember { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }
+    var gunModelExpanded by remember { mutableStateOf(false) }
 
-    val gunTypes = listOf("Handgun", "Rifle", "Shotgun", "Other")
+    val gunTypes = listOf("GLOCK", "BERETTA")
+
+    val glockModels = listOf(
+        // Full-Size
+        "G17", "G20", "G21", "G22", "G37",
+        // Compact
+        "G19", "G23", "G38", "G45",
+        // Subcompact
+        "G26", "G27", "G29", "G30", "G33",
+        // Slimline / Single Stack
+        "G42", "G43", "G43X", "G48",
+        // Crossover & Special Editions
+        "G17L", "G34", "G35", "G44", "G47",
+        // Generations (not models but for reference)
+        "Gen1", "Gen2", "Gen3", "Gen4", "Gen5"
+    )
+
+    val berettaModels = listOf(
+        // 92 Series
+        "92FS / M9", "92G", "92A1", "M9A1", "M9A3", "92X", "92X Performance",
+        // PX4 Storm
+        "PX4 Full Size", "PX4 Compact", "PX4 Subcompact",
+        // APX Series
+        "APX Full Size", "APX Centurion", "APX Carry", "APX A1 Carry",
+        // Compact / Pocket
+        "Beretta 84 Cheetah", "Beretta 85FS", "Beretta Pico", "Beretta Tomcat 3032",
+        // Tactical / Competition
+        "92X Performance Defensive", "92 Brigadier Tactical", "APX Combat", "APX RDO",
+        // Historical / Classic
+        "Beretta 1951 Brigadier", "Beretta 1934", "Beretta 1935", "Beretta 70", "Beretta 71"
+    )
+
+
+    val modelList =
+        if (gunType == gunTypes[0]) glockModels else if (gunType == gunTypes[1]) berettaModels else emptyList()
 
     Box(
         modifier = Modifier
@@ -150,6 +187,61 @@ fun GunVerificationCard() {
                                         expanded = false
                                     }
                                 )
+                            }
+                        }
+                    }
+
+                    // Show Gun types
+                    AnimatedVisibility(
+                        visible = gunType.isNotEmpty(),
+                        modifier = Modifier.padding(top = 16.dp)
+                    ) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                text = stringResource(R.string.firearm_model),
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            ExposedDropdownMenuBox(
+                                expanded = gunModelExpanded,
+                                onExpandedChange = { gunModelExpanded = !gunModelExpanded }
+                            ) {
+                                OutlinedTextField(
+                                    value = gunModel,
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    placeholder = { Text(stringResource(R.string.select_firearm_model)) },
+                                    trailingIcon = {
+                                        ExposedDropdownMenuDefaults.TrailingIcon(
+                                            expanded = gunModelExpanded
+                                        )
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .menuAnchor(MenuAnchorType.PrimaryNotEditable),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                        unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                                    )
+                                )
+
+                                ExposedDropdownMenu(
+                                    expanded = gunModelExpanded,
+                                    onDismissRequest = { gunModelExpanded = false }
+                                ) {
+                                    modelList.forEach { type ->
+                                        DropdownMenuItem(
+                                            text = { Text(type) },
+                                            onClick = {
+                                                gunModel = type
+                                                gunModelExpanded = false
+                                            }
+                                        )
+                                    }
+                                }
                             }
                         }
                     }

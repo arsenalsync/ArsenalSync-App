@@ -113,7 +113,7 @@
     <string name="please_verify_your_firearm_to_access_safety_features">Please verify your firearm to access safety features</string>
     <string name="firearm_type">Firearm Type</string>
     <string name="select_firearm_type">Select firearm type</string>
-    <string name="unique_gun_number">Unique Gun Number</string>
+    <string name="unique_gun_number">Unique Gun Id</string>
     <string name="enter_serial_number">Enter serial number</string>
     <string name="verifying">Verifying…</string>
     <string name="submit_for_verification">Submit for Verification</string>
@@ -136,4 +136,6 @@
     <string name="locked">Locked</string>
     <string name="how_it_works_your_firearm_will_automatically_lock_after_the_specified_period_of_inactivity_you_can_always_manually_unlock_it_when_needed">How it works: Your firearm will automatically lock after the specified period of inactivity. You can always manually unlock it when needed.</string>
     <string name="enter_hours">Enter hours</string>
+    <string name="firearm_model">Firearm Model</string>
+    <string name="select_firearm_model">Select firearm model</string>
 </resources>
